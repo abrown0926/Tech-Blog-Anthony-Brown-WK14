@@ -1,0 +1,12 @@
+<div class="blogs">
+  {{#each this}}
+    <div>
+      <p class="card-body2">
+        {{blogContent}}
+        -
+        {{user.username}}
+        {{format_date dateCreated}}
+      </p>
+    </div>
+  {{/each}}
+</div>
