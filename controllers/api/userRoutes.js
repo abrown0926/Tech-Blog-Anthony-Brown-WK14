@@ -37,6 +37,7 @@ router.post("/login", async (req, res) => {
       return;
     }
 
+    // Verify the posted password with the password store in the database
     const validPassword = await dbUserData.checkPassword(req.body.password);
 
     if (!validPassword) {

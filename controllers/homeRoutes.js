@@ -1,61 +1,64 @@
 const router = require("express").Router();
-const { User } = require("../models");
-const Posts = require("../models/Posts");
+const { Post, Blog, User } = require("../models/");
 const withAuth = require("../utils/auth");
 
-// Prevent non logged in users from viewing the homepage
-router.get("/", withAuth, async (req, res) => {
+// Get all posts for homepage
+router.get("/", async (req, res) => {
   try {
-    const userData = await User.findAll({
-      attributes: { exclude: ["password"] },
-      order: [["name", "ASC"]],
+    const postData = await Post.findAll({
+      include: [User],
     });
 
-    const users = userData.map((project) => project.get({ plain: true }));
+    const posts = postData.map((post) => post.get({ plain: true }));
 
-    res.render("homepage", {
-      users,
-      // Pass the logged in flag to the template
-      logged_in: req.session.logged_in,
-    });
+    res.render("homepage", { posts, loggedIn: req.session.loggedIn });
   } catch (err) {
     res.status(500).json(err);
   }
 });
 
+// Get single post
+router.get("/post/:id", withAuth, async (req, res) => {
+  try {
+    const postData = await Post.findByPk(req.params.id, {
+      include: [
+        User,
+        {
+          model: Blog,
+          include: [User],
+        },
+      ],
+    });
+
+    if (postData) {
+      const post = postData.get({ plain: true });
+
+      console.log(post);
+      res.render("single-post", { post, loggedIn: req.session.loggedIn });
+    } else {
+      res.status(404).end();
+    }
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
+// Login - Signup routes
 router.get("/login", (req, res) => {
-  // If a session exists, redirect the request to the homepage
-  if (req.session.logged_in) {
-    res.redirect("/");
+  if (req.session.loggedIn) {
+    res.redirect("/dashboard");
     return;
   }
-
   res.render("login");
 });
 
-// GET one gallery
-router.get("/gallery/:id", async (req, res) => {
-  // If the user is not logged in, redirect the user to the login page
-  if (!req.session.loggedIn) {
-    res.redirect("/login");
-  } else {
-    // If the user is logged in, allow them to view the gallery
-    try {
-      const dbGalleryData = await Gallery.findByPk(req.params.id, {
-        include: [
-          {
-            model: Posts,
-            attributes: ["id", "title", "author", "description"],
-          },
-        ],
-      });
-      const gallery = dbGalleryData.get({ plain: true });
-      res.render("gallery", { gallery, loggedIn: req.session.loggedIn });
-    } catch (err) {
-      console.log(err);
-      res.status(500).json(err);
-    }
+router.get("/signup", (req, res) => {
+  if (req.session.loggedIn) {
+    res.redirect("/dashboard");
+    return;
   }
+
+  res.render("signup");
 });
 
 module.exports = router;

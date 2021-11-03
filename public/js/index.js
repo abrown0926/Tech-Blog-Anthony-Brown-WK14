@@ -1,15 +1,15 @@
-let noteTitle;
-let noteText;
-let saveNoteBtn;
-let newNoteBtn;
-let noteList;
+let postTitle;
+let postText;
+let savePostBtn;
+let createPostBtn;
+let postList;
 
-if (window.location.pathname === "/notes") {
-  noteTitle = document.querySelector(".note-title");
-  noteText = document.querySelector(".note-textarea");
-  saveNoteBtn = document.querySelector(".save-note");
-  newNoteBtn = document.querySelector(".new-note");
-  noteList = document.querySelectorAll(".list-container .list-group");
+if (window.location.pathname === "/") {
+  postTitle = document.querySelector(".post-title");
+  postText = document.querySelector(".post-textarea");
+  savePostBtn = document.querySelector(".save-post");
+  createPostBtn = document.querySelector(".new-post");
+  postList = document.querySelectorAll(".list-container .list-group");
 }
 
 // Show an element
