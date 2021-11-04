@@ -33,7 +33,7 @@ Comment.init(
       // this is a foreign key which references Blogpost.id
       type: Sequelize.INTEGER,
       references: {
-        model: "blogpost",
+        model: "post",
         key: "id",
       },
     },
