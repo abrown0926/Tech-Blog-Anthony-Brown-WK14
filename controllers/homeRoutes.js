@@ -1,39 +1,30 @@
 const router = require("express").Router();
-const { User, BlogPost, Comment } = require("../models");
+const { User, Post, Comment } = require("../models");
 
-// render homepage
+// Homepage
 router.get("/", async (req, res) => {
   try {
-    //get all blog posts and JOIN with user
-    const bpData = await BlogPost.findAll({
+    // Link post with user
+    const bpData = await Post.findAll({
       include: [{ model: User }],
     });
 
-    //serialize data so template can read it
-    // need to map over it because this is an array of objects
     const bp = bpData.map((post) => post.get({ plain: true }));
 
-    // pass serialized data into template
-    // render 'home' view and pass bp data into it
     res.render("home", { bp });
   } catch (err) {
     res.status(500).json(err);
   }
 });
 
-// render individual BlogPost with associated User and Comment data
+// Links user to comments
 router.get("/post/:id", async (req, res) => {
   try {
-    const bpData = await BlogPost.findByPk(req.params.id, {
-      //this JOINS with User and Comment
+    const bpData = await Post.findByPk(req.params.id, {
       include: [{ model: User }, { model: Comment }],
     });
 
-    // serialize data so that template can read it
-    // no need to map over it because this is one object
     const bp = bpData.get({ plain: true });
-
-    console.log(`\n ${bp.id} \n`);
 
     res.render("post", { bp });
   } catch (err) {
@@ -44,7 +35,6 @@ router.get("/post/:id", async (req, res) => {
 // Render login page
 router.get("/login", (req, res) => {
   try {
-    // render 'login' view
     res.render("login");
   } catch (err) {
     res.status(500).json(err);
@@ -54,7 +44,6 @@ router.get("/login", (req, res) => {
 // Render registration page
 router.get("/register", async (req, res) => {
   try {
-    // render 'login' view
     res.render("register");
   } catch (err) {
     res.status(500).json(err);
@@ -64,7 +53,6 @@ router.get("/register", async (req, res) => {
 // Render New Post page
 router.get("/newPost", (req, res) => {
   try {
-    // render 'newPost' view
     res.render("newPost");
   } catch (err) {
     res.status(500).json(err);
@@ -74,16 +62,10 @@ router.get("/newPost", (req, res) => {
 // render editPost page
 router.get("/editPost/:id", async (req, res) => {
   try {
-    const bpData = await BlogPost.findByPk(req.params.id, {
-      //this JOINS with User data
+    const bpData = await Post.findByPk(req.params.id, {
       include: [{ model: User }],
     });
-
-    // serialize data so that template can read it
-    // no need to map over it because this is one object
     const bp = bpData.get({ plain: true });
-
-    console.log(`\n ${bp.id} \n`);
 
     res.render("editPost", { bp });
   } catch (err) {
@@ -91,29 +73,13 @@ router.get("/editPost/:id", async (req, res) => {
   }
 });
 
-// GET - all users
-router.get("/user", async (req, res) => {
-  try {
-    console.log(`\n Getting all user data \n`);
-
-    const userData = await User.findAll();
-    res.status(200).json(userData);
-  } catch (err) {
-    res.status(500).json(err);
-  }
-});
-
-// GET - user by id with associations to blogposts and comments
+// Get user by id linked to comments
 router.get("/user/all/:id", async (req, res) => {
   try {
-    console.log(`\n Getting data for user with id: ${req.params.id} \n`);
-
     const userData = await User.findByPk(req.params.id, {
-      // this JOINS with BlogPost and Comment
-      include: [{ model: BlogPost }, { model: Comment }],
+      include: [{ model: Post }, { model: Comment }],
     });
 
-    // check to see if user data was returned
     if (!userData) {
       res.status(404).json({ message: "No users found with this id" });
     } else {
@@ -124,29 +90,13 @@ router.get("/user/all/:id", async (req, res) => {
   }
 });
 
-// GET - all blog posts
-router.get("/blogpost", async (req, res) => {
+// Get post by id linked to user
+router.get("/post/all/:id", async (req, res) => {
   try {
-    console.log(`\n Getting all blog post data \n`);
-
-    const bpData = await BlogPost.findAll();
-    res.status(200).json(bpData);
-  } catch (err) {
-    res.status(500).json(err);
-  }
-});
-
-// GET - blog post by id with associations to users and comments
-router.get("/blogpost/all/:id", async (req, res) => {
-  try {
-    console.log(`\n Getting data for blog post with id: ${req.params.id} \n`);
-
-    const bpData = await BlogPost.findByPk(req.params.id, {
-      //this JOINS with User and Comment
+    const bpData = await Post.findByPk(req.params.id, {
       include: [{ model: User }, { model: Comment }],
     });
 
-    // check to see if blog post data was returned
     if (!bpData) {
       res.status(404).json({ message: "No blog posts found with this id" });
     } else {
@@ -157,28 +107,13 @@ router.get("/blogpost/all/:id", async (req, res) => {
   }
 });
 
-// GET - all comments
-router.get("/comment", async (req, res) => {
-  try {
-    console.log(`\n Getting all comment data \n`);
-
-    const commentData = await Comment.findAll();
-    res.status(200).json(commentData);
-  } catch (err) {
-    res.status(500).json(err);
-  }
-});
-
-// GET - comment by id with associations to User and BlogPost
+// Get comment by id linked to user
 router.get("/comment/all/:id", async (req, res) => {
   try {
-    console.log(`\n Getting data for comment with id: ${req.params.id} \n`);
-
     const commentData = await Comment.findByPk(req.params.id, {
-      include: [{ model: User }, { model: BlogPost }],
+      include: [{ model: User }, { model: Post }],
     });
 
-    // check to see if comment data was returned
     if (!commentData) {
       res.status(404).json({ message: "No comments found with this id" });
     } else {

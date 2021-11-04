@@ -1,9 +1,9 @@
 const { Model, DataTypes, Sequelize } = require("sequelize");
 const sequelize = require("../config/connection");
 
-class BlogPost extends Model {}
+class Post extends Model {}
 
-BlogPost.init(
+Post.init(
   {
     id: {
       type: Sequelize.INTEGER,
@@ -22,10 +22,10 @@ BlogPost.init(
     date: {
       type: Sequelize.DATE,
       allowNull: false,
-      defaultValue: DataTypes.NOW, // value at creation will be current datetime
+      defaultValue: DataTypes.NOW,
     },
     user_id: {
-      type: Sequelize.INTEGER, // this is a foreign key which references User.id
+      type: Sequelize.INTEGER,
       references: {
         model: "user",
         key: "id",
@@ -37,8 +37,8 @@ BlogPost.init(
     timestamps: false,
     freezeTableName: true,
     underscored: true,
-    modelName: "blogpost",
+    modelName: "post",
   }
 );
 
-module.exports = BlogPost;
+module.exports = Post;

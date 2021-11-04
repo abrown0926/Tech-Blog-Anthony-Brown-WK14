@@ -1,11 +1,8 @@
 const router = require("express").Router();
-const { User, BlogPost } = require("../../models");
+const { User, Post } = require("../../models");
 
-// this is at the /api endpoint
-
-// Make new blog post route
+// New post
 router.post("/newPost", async (req, res) => {
-  // validating username
   const postData = await User.findOne({
     where: { username: req.body.username },
   });
@@ -14,35 +11,32 @@ router.post("/newPost", async (req, res) => {
     res
       .status(400)
       .json({ message: "Incorrect username, please enter valid username" });
+    res.render("home");
     return;
   }
 
-  // create object with data structure I need for new blog post
-  const bpData = {
-    title: req.body.title,
-    content: req.body.content,
-    user_id: postData.id,
-  };
-
-  // render individual blog post page
-  res.render("home");
-
-  // create new blog post
-  const newPost = await BlogPost.create(bpData);
+  try {
+    const newPost = await Post.create({
+      title: req.body.title,
+      content: req.body.content,
+      user_id: postData.id,
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json(err);
+  }
 });
 
-// delete blog post route delete a blog post by its 'id' value
+// Delete post by id
 router.delete("/:id", async (req, res) => {
   try {
-    const bpData = await BlogPost.destroy({
+    const bpData = await Post.destroy({
       where: { id: req.params.id },
     });
 
-    // if wrong id entered
     if (!bpData) {
       res.status(404).json({ message: "no blog post found with this id" });
     } else {
-      console.log(`\n Deleting blog post with id: ${req.params.id} \n`);
       res.status(200).json(bpData);
     }
   } catch (err) {
@@ -50,11 +44,10 @@ router.delete("/:id", async (req, res) => {
   }
 });
 
-// edit blog post route by its 'id' value
+// Edit post by id
 router.put("/:id", async (req, res) => {
   try {
-    const bpData = await BlogPost.update(
-      // set all attributes of blog posts to values passed in to req.body
+    const bpData = await Post.update(
       {
         title: req.body.title,
         content: req.body.content,
@@ -63,11 +56,9 @@ router.put("/:id", async (req, res) => {
       { where: { id: req.params.id } }
     );
 
-    // if wrong id entered
     if (!bpData) {
       res.status(404).json({ message: "no blog post found with this id" });
     } else {
-      console.log(`\n Editing blog post record id: ${req.params.id} \n`);
       res.status(200).json(bpData);
     }
   } catch (err) {
