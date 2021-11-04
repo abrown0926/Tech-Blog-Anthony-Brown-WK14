@@ -1,73 +1,102 @@
 const router = require("express").Router();
 const { User } = require("../../models");
 
-// CREATE new user
-router.post("/", async (req, res) => {
-  try {
-    const dbUserData = await User.create({
-      username: req.body.username,
-      email: req.body.email,
-      password: req.body.password,
-    });
+// this is at the /api endpoint
 
-    req.session.save(() => {
-      req.session.loggedIn = true;
-
-      res.status(200).json(dbUserData);
-    });
-  } catch (err) {
-    console.log(err);
-    res.status(500).json(err);
-  }
-});
-
-// Login
+// route to verify user login credentials
 router.post("/login", async (req, res) => {
   try {
-    const dbUserData = await User.findOne({
-      where: {
-        email: req.body.email,
-      },
+    // validating username
+    const userData = await User.findOne({
+      where: { username: req.body.username },
     });
-
-    if (!dbUserData) {
-      res
-        .status(400)
-        .json({ message: "Incorrect email or password. Please try again!" });
+    if (!userData) {
+      res.status(400).json({ message: "Incorrect username, please try again" });
       return;
     }
 
-    // Verify the posted password with the password store in the database
-    const validPassword = await dbUserData.checkPassword(req.body.password);
+    //validating password based on user credentials
+    const validPassword = await userData.checkPassword(req.body.password);
 
     if (!validPassword) {
-      res
-        .status(400)
-        .json({ message: "Incorrect email or password. Please try again!" });
+      res.status(400).json({ message: "Incorrect password, please try again" });
       return;
     }
 
-    req.session.save(() => {
-      req.session.loggedIn = true;
-
-      res
-        .status(200)
-        .json({ user: dbUserData, message: "You are now logged in!" });
-    });
+    // render homepage if valid credentials given by user
+    res.render("home");
   } catch (err) {
-    console.log(err);
-    res.status(500).json(err);
+    res.status(400).json(err);
   }
 });
 
-// Logout
-router.post("/logout", (req, res) => {
-  if (req.session.loggedIn) {
-    req.session.destroy(() => {
-      res.status(204).end();
+// Create new user upon submission in user registration form
+
+router.post("/registerUser", async (req, res) => {
+  try {
+    const userData = await User.create(req.body);
+
+    // save user_id and logged_in into session
+    req.session.save(() => {
+      req.session.user_id = userData.id;
+      req.session.logged_in = true;
+
+      res.status(200).json(userData);
     });
-  } else {
-    res.status(404).end();
+
+    // render homepage if valid credentials are given
+    res.render("home");
+  } catch (err) {
+    res.status(400).json(err);
+  }
+});
+
+router.post("/logout", (req, res) => {
+  console.log(`\n Logged in: ${req.session.logged_in}  \n`);
+
+  if (req.session.logged_in) {
+    res.render("login");
+  }
+});
+
+// Make new blog post route
+router.post("/newPost/makePost", async (req, res) => {
+  // validating username
+  const userData = await User.findOne({
+    where: { username: req.body.username },
+  });
+  if (!userData) {
+    res
+      .status(400)
+      .json({ message: "Incorrect username, please enter valid username" });
+    return;
+  }
+
+  const newPost = await User.create(req.body);
+
+  // render homepage if valid credentials are given
+  res.render("home");
+});
+
+// GET - user by username with associations to blogposts and comments
+router.get("/:username", async (req, res) => {
+  try {
+    console.log(
+      `\n Getting data for user with username: ${req.params.username} \n`
+    );
+
+    const userData = await User.findOne({
+      where: { username: req.params.username },
+    });
+
+    // check to see if user data was returned
+    if (!userData) {
+      res.status(404).json({ message: "No users found with this username" });
+    } else {
+      res.status(200).json(userData);
+    }
+  } catch (err) {
+    res.status(500).json(err);
   }
 });
 

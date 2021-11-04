@@ -4,15 +4,14 @@ const exphbs = require("express-handlebars");
 const routes = require("./controllers");
 const session = require("express-session");
 const sequelize = require("./config/connection");
-const helpers = require("./utils/helpers");
 
 // Create a new sequelize store using the express-session package
 const SequelizeStore = require("connect-session-sequelize")(session.Store);
 
-const hbs = exphbs.create({ helpers });
+const hbs = exphbs.create({});
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5001;
 
 // Set up sessions with cookies
 const sess = {
