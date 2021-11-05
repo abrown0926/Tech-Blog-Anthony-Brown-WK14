@@ -19,7 +19,7 @@ router.put("/:id", async (req, res) => {
       {
         content: req.body.content,
         user_id: req.body.user_id,
-        blogpost_id: req.body.blogpost_id,
+        post_id: req.body.post_id,
       },
       { where: { id: req.params.id } }
     );

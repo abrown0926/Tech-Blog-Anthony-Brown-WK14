@@ -27,7 +27,7 @@ a {
 }
 
 /* Single posts */
-#authorName,
+#ownerName,
 #datePosted {
   font-size: 20px;
   font-weight: bold;

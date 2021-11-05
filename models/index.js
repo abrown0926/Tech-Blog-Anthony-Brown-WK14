@@ -14,24 +14,20 @@ Post.belongsTo(User, {
 });
 
 User.hasMany(Comment, {
-  // User has one:many relationship to Comment. One user can have many comments
   foreignKey: "user_id",
   onDelete: "CASCADE",
 });
 
 Comment.belongsTo(User, {
-  // Comment has many:one relationship to user. Many comments can belong to one user
   foreignKey: "user_id",
 });
 
 Post.hasMany(Comment, {
-  // Blog post has many:one relationship to comment. One blog post can have many comments
-  foreignKey: "blogpost_id",
+  foreignKey: "post_id",
   onDelete: "CASCADE",
 });
 
 Comment.belongsTo(Post, {
-  // Comment has many:one relationship to blogpost. Many comments can belong to one blog post
   foreignKey: "post_id",
 });
 

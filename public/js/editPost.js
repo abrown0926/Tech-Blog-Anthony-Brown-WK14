@@ -1,44 +1,40 @@
-const updateBlogPost = async (event) => {
-  /**
-   * Handles updating blog post
-   */
-
+const updatePost = async (event) => {
+  // Stop the browser from submitting the form so can be done with JavaScript
   event.preventDefault();
 
-  //collects needed information from front end
+  // Gather the data from the form elements on the page
   const id = document.querySelector("#disabled-text").value.trim();
   const title = document.querySelector("#title-entry").value.trim();
   const content = document.querySelector("#content-entry").value.trim();
-  const username = document.querySelector("#username-entry").value.trim();
+  const username = document.querySelector("#username-signup").value.trim();
 
-  // use username to get user_id from database
   if (id && title && content && username) {
-    // send GET request for data about username
-    const response = await fetch(`/api/user/${username}`);
+    // Send the id, title, content, and username to the server
+    const response = await fetch(`/api/user/${username}`, {
+      method: "POST",
+      body: JSON.stringify({ id, title, content, username }),
+      headers: { "Content-Type": "application/json" },
+    });
 
     if (response.ok) {
       const userData = await response.json();
-      // What we really need is the userData.id to later use in PUT request
+
       const user_id = userData.id;
 
-      // make PUT request to update blog post
-      const putResponse = await fetch(`/api/blogpost/${user_id}`, {
+      // Update post
+      const putResponse = await fetch(`/api/post/${user_id}`, {
         method: "PUT",
         body: JSON.stringify({ id, title, content, user_id }),
         headers: { "Content-Type": "application/json" },
       });
 
       if (putResponse.ok) {
-        //if successful, redirect browser to homepage
         document.location.replace(`/post/${user_id}`);
       }
     }
   } else {
-    alert("Must enter all values plus valid username");
+    alert("Failed to enter correct username.");
   }
 };
 
-// add event listener to submit button
-document
-  .querySelector("#editPostBtn")
-  .addEventListener("click", updateBlogPost);
+document.querySelector("#editPostBtn").addEventListener("click", updatePost);

@@ -1,18 +1,13 @@
 const loginFormHandler = async (event) => {
-  /**
-   * Handles validation of the user's given username and password
-   * against entries in the database. Makes fetch request (POST) to /api/user/login endpoint.
-   * If response is OK, redirect user to homepage.
-   */
+  // Stop the browser from submitting the form so we can do so with JavaScript
   event.preventDefault();
 
-  // Collect values from the login form
+  // Gather the data from the form elements on the page
   const username = document.querySelector("#username-login").value.trim();
   const password = document.querySelector("#password-login").value.trim();
 
-  // if both username and password values are provided
+  // Send the username and password to the server
   if (username && password) {
-    // Send POST request to the API endpoint
     const response = await fetch("/api/user/login", {
       method: "POST",
       body: JSON.stringify({ username, password }),

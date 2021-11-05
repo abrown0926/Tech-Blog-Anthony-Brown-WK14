@@ -3,8 +3,6 @@ const sequelize = require("../config/connection");
 
 class Comment extends Model {}
 
-//this model might need a FK reference to User later?
-
 Comment.init(
   {
     id: {
@@ -20,17 +18,16 @@ Comment.init(
     date: {
       type: Sequelize.DATE,
       allowNull: false,
-      defaultValue: DataTypes.NOW, // value at creation will be current datetime
+      defaultValue: DataTypes.NOW,
     },
     user_id: {
-      type: Sequelize.INTEGER, // this is a foreign key which references User.id
+      type: Sequelize.INTEGER, 
       references: {
         model: "user",
         key: "id",
       },
     },
-    blogpost_id: {
-      // this is a foreign key which references Blogpost.id
+    post_id: {
       type: Sequelize.INTEGER,
       references: {
         model: "post",

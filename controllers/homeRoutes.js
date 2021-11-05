@@ -1,17 +1,18 @@
 const router = require("express").Router();
 const { User, Post, Comment } = require("../models");
+const withAuth = require("../utils/auth");
 
 // Homepage
-router.get("/", async (req, res) => {
+router.get("/", withAuth, async (req, res) => {
   try {
     // Link post with user
-    const bpData = await Post.findAll({
+    const blogPostData = await Post.findAll({
       include: [{ model: User }],
     });
 
-    const bp = bpData.map((post) => post.get({ plain: true }));
+    const blogPost = blogPostData.map((post) => post.get({ plain: true }));
 
-    res.render("home", { bp });
+    res.render("home", { blogPost });
   } catch (err) {
     res.status(500).json(err);
   }
@@ -20,13 +21,13 @@ router.get("/", async (req, res) => {
 // Links user to comments
 router.get("/post/:id", async (req, res) => {
   try {
-    const bpData = await Post.findByPk(req.params.id, {
+    const blogPostData = await Post.findByPk(req.params.id, {
       include: [{ model: User }, { model: Comment }],
     });
 
-    const bp = bpData.get({ plain: true });
+    const blogPost = blogPostData.get({ plain: true });
 
-    res.render("post", { bp });
+    res.render("post", { blogPost });
   } catch (err) {
     res.status(500).json(err);
   }
@@ -62,12 +63,12 @@ router.get("/newPost", (req, res) => {
 // render editPost page
 router.get("/editPost/:id", async (req, res) => {
   try {
-    const bpData = await Post.findByPk(req.params.id, {
+    const blogPostData = await Post.findByPk(req.params.id, {
       include: [{ model: User }],
     });
-    const bp = bpData.get({ plain: true });
+    const blogPost = blogPostData.get({ plain: true });
 
-    res.render("editPost", { bp });
+    res.render("editPost", { blogPost });
   } catch (err) {
     res.status(500).json(err);
   }
@@ -93,14 +94,14 @@ router.get("/user/all/:id", async (req, res) => {
 // Get post by id linked to user
 router.get("/post/all/:id", async (req, res) => {
   try {
-    const bpData = await Post.findByPk(req.params.id, {
+    const blogPostData = await Post.findByPk(req.params.id, {
       include: [{ model: User }, { model: Comment }],
     });
 
-    if (!bpData) {
+    if (!blogPostData) {
       res.status(404).json({ message: "No blog posts found with this id" });
     } else {
-      res.status(200).json(bpData);
+      res.status(200).json(blogPostData);
     }
   } catch (err) {
     res.status(500).json(err);

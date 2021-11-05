@@ -30,14 +30,14 @@ router.post("/newPost", async (req, res) => {
 // Delete post by id
 router.delete("/:id", async (req, res) => {
   try {
-    const bpData = await Post.destroy({
+    const blogPostData = await Post.destroy({
       where: { id: req.params.id },
     });
 
-    if (!bpData) {
+    if (!blogPostData) {
       res.status(404).json({ message: "no blog post found with this id" });
     } else {
-      res.status(200).json(bpData);
+      res.status(200).json(blogPostData);
     }
   } catch (err) {
     res.status(500).json(err);
@@ -47,7 +47,7 @@ router.delete("/:id", async (req, res) => {
 // Edit post by id
 router.put("/:id", async (req, res) => {
   try {
-    const bpData = await Post.update(
+    const blogPostData = await Post.update(
       {
         title: req.body.title,
         content: req.body.content,
@@ -56,10 +56,10 @@ router.put("/:id", async (req, res) => {
       { where: { id: req.params.id } }
     );
 
-    if (!bpData) {
+    if (!blogPostData) {
       res.status(404).json({ message: "no blog post found with this id" });
     } else {
-      res.status(200).json(bpData);
+      res.status(200).json(blogPostData);
     }
   } catch (err) {
     res.status(400).json(err);
