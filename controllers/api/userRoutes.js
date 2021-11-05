@@ -46,6 +46,8 @@ router.post("/registerUser", async (req, res) => {
       req.session.loggedIn = true;
 
       res.status(200).json(userData);
+
+      res.render("home");
     });
   } catch (err) {
     console.log(err);
