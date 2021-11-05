@@ -45,7 +45,7 @@ router.post("/registerUser", async (req, res) => {
     req.session.save(() => {
       req.session.loggedIn = true;
 
-      res.status(200).json(userData);
+      res.status(200).json(userData)
 
       res.render("home");
     });

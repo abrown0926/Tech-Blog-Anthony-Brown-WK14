@@ -16,8 +16,9 @@ const loginFormHandler = async (event) => {
 
     if (response.ok) {
       // If successful, redirect the browser to the profile page
-      document.location.replace("/");
       alert("Login Successful!");
+
+      response.writeHead("/");
     } else {
       alert("Please enter a valid username and password");
     }
