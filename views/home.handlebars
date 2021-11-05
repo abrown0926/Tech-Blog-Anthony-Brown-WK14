@@ -1,12 +1,12 @@
 <section id="blogposts">
-  {{#each blogPost as |blogPost|}}
+  {{#each bp as |bp|}}
     <div class="postItem col-md-12">
-      <a href="/post/{{blogPost.id}}">
+      <a href="/post/{{bp.id}}">
         <div class="card">
           <div class="card-body">
-            <h1>{{blogPost.title}}</h1>
+            <h1>{{bp.title}}</h1>
             <h6 class="card-subtitle text-muted">Username:
-              {{blogPost.user.username}}</h6>
+              {{bp.user.username}}</h6>
             <p class="card-text">{{this.content}}</p>
           </div>
         </div>

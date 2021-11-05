@@ -1,21 +1,21 @@
 <section id="singlePost">
   <div class="jumbotron">
-    <h1 class="display-4">{{blogPost.title}}</h1>
-    <p><span id="ownerName">Username:</span> {{blogPost.user.username}} </p>
-    <p><span data-postID="{{blogPost.id}}" id="datePosted">Created On:</span>
-      {{blogPost.date}}</p>
+    <h1 class="display-4">{{bp.title}}</h1>
+    <p><span id="ownerName">Username:</span> {{bp.user.username}} </p>
+    <p><span data-postID="{{bp.id}}" id="datePosted">Created On:</span>
+      {{bp.date}}</p>
 
-    <p class="lead">{{blogPost.content}}</p>
+    <p class="lead">{{bp.content}}</p>
     <hr class="my-4" />
     <div id="comments">
-      {{#each blogPost.comments as |comment|}}
+      {{#each bp.comments as |comment|}}
         <p> {{comment.content}} </p>
       {{/each}}
     </div>
     <p class="lead">
       <a
         class="btn btn-primary btn-lg"
-        href="/editPost/{{blogPost.id}}"
+        href="/editPost/{{bp.id}}"
         role="button"
       >Edit Post</a>
       <a class="btn btn-primary btn-lg" role="button" id="deletePost">Delete

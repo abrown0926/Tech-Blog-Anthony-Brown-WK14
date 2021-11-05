@@ -6,13 +6,13 @@ const withAuth = require("../utils/auth");
 router.get("/", withAuth, async (req, res) => {
   try {
     // Link post with user
-    const blogPostData = await Post.findAll({
+    const bpData = await Post.findAll({
       include: [{ model: User }],
     });
 
-    const blogPost = blogPostData.map((post) => post.get({ plain: true }));
+    const bp = bpData.map((post) => post.get({ plain: true }));
 
-    res.render("home", { blogPost });
+    res.render("home", { bp });
   } catch (err) {
     res.status(500).json(err);
   }
@@ -21,13 +21,13 @@ router.get("/", withAuth, async (req, res) => {
 // Links user to comments
 router.get("/post/:id", async (req, res) => {
   try {
-    const blogPostData = await Post.findByPk(req.params.id, {
+    const bpData = await Post.findByPk(req.params.id, {
       include: [{ model: User }, { model: Comment }],
     });
 
-    const blogPost = blogPostData.get({ plain: true });
+    const bp = bpData.get({ plain: true });
 
-    res.render("post", { blogPost });
+    res.render("post", { bp });
   } catch (err) {
     res.status(500).json(err);
   }
@@ -63,12 +63,12 @@ router.get("/newPost", (req, res) => {
 // render editPost page
 router.get("/editPost/:id", async (req, res) => {
   try {
-    const blogPostData = await Post.findByPk(req.params.id, {
+    const bpData = await Post.findByPk(req.params.id, {
       include: [{ model: User }],
     });
-    const blogPost = blogPostData.get({ plain: true });
+    const bp = bpData.get({ plain: true });
 
-    res.render("editPost", { blogPost });
+    res.render("editPost", { bp });
   } catch (err) {
     res.status(500).json(err);
   }
@@ -94,14 +94,14 @@ router.get("/user/all/:id", async (req, res) => {
 // Get post by id linked to user
 router.get("/post/all/:id", async (req, res) => {
   try {
-    const blogPostData = await Post.findByPk(req.params.id, {
+    const bpData = await Post.findByPk(req.params.id, {
       include: [{ model: User }, { model: Comment }],
     });
 
-    if (!blogPostData) {
+    if (!bpData) {
       res.status(404).json({ message: "No blog posts found with this id" });
     } else {
-      res.status(200).json(blogPostData);
+      res.status(200).json(bpData);
     }
   } catch (err) {
     res.status(500).json(err);
