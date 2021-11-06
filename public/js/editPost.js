@@ -7,20 +7,9 @@ const updatePost = async (event) => {
   const title = document.querySelector("#title-entry").value.trim();
   const content = document.querySelector("#content-entry").value.trim();
   const username = document.querySelector("#username-entry").value.trim();
+  const user_id = document.querySelector("#userID").value.trim();
 
   if (id && title && content && username) {
-    // Send the id, title, content, and username to the server
-    // // const response = await fetch(`/api/user/${username}`, {
-    //   method: "POST",
-    //   body: JSON.stringify({ id, title, content, username }),
-    //   headers: { "Content-Type": "application/json" },
-    // });
-
-    // if (response.ok) {
-    //   const userData = await response.json();
-
-    //   const user_id = userData.id;
-
     // Update post
     const putResponse = await fetch(`/api/post/${id}`, {
       method: "PUT",
@@ -29,6 +18,7 @@ const updatePost = async (event) => {
     });
 
     if (putResponse.ok) {
+      console.log(putResponse);
       document.location.replace(`/post/${id}`);
     }
   } else {
