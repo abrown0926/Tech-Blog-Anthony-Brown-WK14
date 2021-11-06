@@ -11,6 +11,7 @@ router.get("/", withAuth, async (req, res) => {
     });
 
     const bp = bpData.map((post) => post.get({ plain: true }));
+    console.log(bp);
 
     res.render("home", { bp });
   } catch (err) {

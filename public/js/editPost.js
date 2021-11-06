@@ -6,31 +6,30 @@ const updatePost = async (event) => {
   const id = document.querySelector("#disabled-text").value.trim();
   const title = document.querySelector("#title-entry").value.trim();
   const content = document.querySelector("#content-entry").value.trim();
-  const username = document.querySelector("#username-signup").value.trim();
+  const username = document.querySelector("#username-entry").value.trim();
 
   if (id && title && content && username) {
     // Send the id, title, content, and username to the server
-    const response = await fetch(`/api/user/${username}`, {
-      method: "POST",
-      body: JSON.stringify({ id, title, content, username }),
+    // // const response = await fetch(`/api/user/${username}`, {
+    //   method: "POST",
+    //   body: JSON.stringify({ id, title, content, username }),
+    //   headers: { "Content-Type": "application/json" },
+    // });
+
+    // if (response.ok) {
+    //   const userData = await response.json();
+
+    //   const user_id = userData.id;
+
+    // Update post
+    const putResponse = await fetch(`/api/post/${id}`, {
+      method: "PUT",
+      body: JSON.stringify({ id, title, content, user_id }),
       headers: { "Content-Type": "application/json" },
     });
 
-    if (response.ok) {
-      const userData = await response.json();
-
-      const user_id = userData.id;
-
-      // Update post
-      const putResponse = await fetch(`/api/post/${user_id}`, {
-        method: "PUT",
-        body: JSON.stringify({ id, title, content, user_id }),
-        headers: { "Content-Type": "application/json" },
-      });
-
-      if (putResponse.ok) {
-        document.location.replace(`/post/${user_id}`);
-      }
+    if (putResponse.ok) {
+      document.location.replace(`/post/${id}`);
     }
   } else {
     alert("Failed to enter correct username.");
