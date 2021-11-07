@@ -35,19 +35,28 @@ router.post("/login", async (req, res) => {
 
 router.post("/registerUser", async (req, res) => {
   try {
-    const userData = await User.create({
-      username: req.body.username,
-      email: req.body.email,
-      password: req.body.password,
+    const userAlreadyExist = await User.findOne({
+      where: {
+        email: req.body.email,
+      },
     });
+    if (!userAlreadyExist) {
+      const userData = await User.create({
+        username: req.body.username,
+        email: req.body.email,
+        password: req.body.password,
+      });
 
-    req.session.save(() => {
-      req.session.loggedIn = true;
+      req.session.save(() => {
+        req.session.loggedIn = true;
 
-      res.status(200).json(userData);
+        res.status(200).json(userData);
 
-      res.render("home");
-    });
+        res.render("home");
+      });
+    } else {
+      res.status(500).json("This email already exists!");
+    }
   } catch (err) {
     console.log(err);
     res.status(500).json(err);
