@@ -5,6 +5,15 @@ let sequelize;
 
 if (process.env.JAWSDB_URL) {
   sequelize = new Sequelize(process.env.JAWSDB_URL);
+  sequelize
+    .query("SELECT * FROM user")
+    .success(() => {
+      console.log("connected");
+    })
+    .error((err) => {
+      console.log("error connecting");
+      console.log(err);
+    });
 } else {
   sequelize = new Sequelize(
     process.env.DB_NAME,
