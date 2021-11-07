@@ -16,7 +16,7 @@ const signupFormHandler = async (event) => {
       document.location.replace("/");
     } else {
       let res = await response.json();
-      alert(res);
+      alert(JSON.stringify(res));
     }
   }
 };
