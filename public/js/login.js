@@ -19,7 +19,8 @@ const loginFormHandler = async (event) => {
       alert("Login Successful!");
       document.location.replace("/");
     } else {
-      alert("Please enter a valid username and password");
+      let res = await response.json();
+      alert(JSON.stringify(res));
     }
   }
 };
