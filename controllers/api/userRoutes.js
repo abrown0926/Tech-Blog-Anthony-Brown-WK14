@@ -5,7 +5,7 @@ router.post("/login", async (req, res) => {
   try {
     // Find the user who matches the posted e-mail address
     const userData = await User.findOne({
-      where: { email: req.body.email },
+      where: { username: req.body.username },
     });
     if (!userData) {
       res.status(400).json({ message: "Incorrect username, please try again" });
@@ -35,33 +35,50 @@ router.post("/login", async (req, res) => {
 
 router.post("/registerUser", async (req, res) => {
   try {
-    const userAlreadyExist = await User.findOne({
-      where: {
-        email: req.body.email,
-      },
+    const newUserData = await User.create({
+      username: req.body.username,
+      email: req.body.email,
+      password: req.body.password,
     });
-    if (!userAlreadyExist) {
-      const userData = await User.create({
-        username: req.body.username,
-        email: req.body.email,
-        password: req.body.password,
-      });
 
-      req.session.save(() => {
-        req.session.loggedIn = true;
+    req.session.save(() => {
+      req.session.loggedIn = true;
 
-        res.status(200).json(userData);
-
-        res.render("home");
-      });
-    } else {
-      res.status(500).json("This email already exists!");
-    }
+      res.status(200).json(newUserData);
+    });
   } catch (err) {
     console.log(err);
     res.status(500).json(err);
   }
 });
+//   try {
+//     const userAlreadyExist = await User.findOne({
+//       where: {
+//         email: req.body.email,
+//       },
+//     });
+//     if (!userAlreadyExist) {
+//       const userData = await User.create({
+//         username: req.body.username,
+//         email: req.body.email,
+//         password: req.body.password,
+//       });
+
+//       req.session.save(() => {
+//         req.session.loggedIn = true;
+
+//         res.status(200).json(userData);
+
+//         res.render("home");
+//       });
+//     } else {
+//       res.status(500).json("This email already exists!");
+//     }
+//   } catch (err) {
+//     console.log(err);
+//     res.status(500).json(err);
+//   }
+// });
 
 // Logout
 router.post("/logout", (req, res) => {
