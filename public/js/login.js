@@ -20,10 +20,13 @@ const loginFormHandler = async (event) => {
       document.location.replace("/");
     } else {
       let res = await response.json();
-      alert(JSON.stringify(res));
+      alert("Failed to log in.");
+      // alert(JSON.stringify(res));
     }
   }
 };
 
 // add event listener to login button
-document.querySelector("#loginBtn").addEventListener("click", loginFormHandler);
+document
+  .querySelector(".login-form")
+  .addEventListener("submit", loginFormHandler);
