@@ -19,7 +19,7 @@ const loginFormHandler = async (event) => {
       alert("Login Successful!");
       document.location.replace("/");
     } else {
-      let res = await response.json();
+      // let res = await response.json();
       alert("Failed to log in.");
       // alert(JSON.stringify(res));
     }
