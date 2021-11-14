@@ -20,9 +20,9 @@ if (process.env.JAWSDB_URL) {
     process.env.DB_USER,
     process.env.DB_PW,
     {
-      host: "localhost",
+      host: process.env.DB_HOST,
       dialect: "mysql",
-      database: "tech_blog_db",
+      // database: "tech_blog_db",
       port: 3306,
     }
   );
