@@ -21,6 +21,7 @@ router.post("/newPost", async (req, res) => {
       content: req.body.content,
       user_id: postData.id,
     });
+    res.json({success: true, newPost})
   } catch (err) {
     console.log(err);
     res.status(500).json(err);
